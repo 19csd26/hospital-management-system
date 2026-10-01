@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import PatientsPage from './pages/PatientsPage';
+import PatientViewPage from './pages/PatientViewPage';
 import DoctorsPage from './pages/DoctorsPage';
 import AppointmentsPage from './pages/AppointmentsPage';
 import MedicalRecordsPage from './pages/MedicalRecordsPage';
@@ -32,6 +33,7 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       <Route path="/patients" element={<ProtectedRoute><PatientsPage /></ProtectedRoute>} />
+      <Route path="/patients/:id" element={<ProtectedRoute><PatientViewPage /></ProtectedRoute>} />
       <Route path="/doctors" element={<ProtectedRoute><DoctorsPage /></ProtectedRoute>} />
       <Route path="/appointments" element={<ProtectedRoute><AppointmentsPage /></ProtectedRoute>} />
       <Route path="/medical-records" element={<ProtectedRoute><MedicalRecordsPage /></ProtectedRoute>} />

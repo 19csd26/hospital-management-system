@@ -21,6 +21,8 @@ config/initializers/secret_token.rb
 !/config/database.yml
 /storage/*.sqlite3
 /storage/*.sqlite3-journal
+/storage/*.sqlite3-shm
+/storage/*.sqlite3-wal
 /asset-cache
 
 # Node

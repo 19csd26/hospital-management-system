@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, Edit2, Trash2, Eye, User } from 'lucide-react';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Layout from '../components/layout/Layout';
 import Modal from '../components/ui/Modal';
@@ -77,9 +78,10 @@ function PatientForm({ initial, onSubmit, loading }) {
 
 export default function PatientsPage() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [modal, setModal] = useState(null); // null | 'create' | {type:'edit',patient} | {type:'view',patient}
+  const [modal, setModal] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['patients', page, search],
@@ -150,11 +152,16 @@ export default function PatientsPage() {
                   <tr key={p.id} className="hover:bg-gray-50 transition-colors">
                     <td className="table-cell">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center">
+                        <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                           <User className="w-4 h-4 text-blue-600" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{p.name}</p>
+                          <button
+                            onClick={() => navigate(`/patients/${p.id}`)}
+                            className="font-medium text-gray-900 hover:text-primary-600 transition-colors text-left"
+                          >
+                            {p.name}
+                          </button>
                           <p className="text-xs text-gray-500">{p.email}</p>
                         </div>
                       </div>
@@ -171,10 +178,17 @@ export default function PatientsPage() {
                     <td className="table-cell capitalize text-gray-600">{p.gender || '—'}</td>
                     <td className="table-cell">
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setModal({ type: 'edit', patient: p })} className="p-1.5 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors">
+                        <button
+                          onClick={() => navigate(`/patients/${p.id}`)}
+                          className="p-1.5 hover:bg-green-50 text-green-600 rounded-lg transition-colors"
+                          title="View details"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => setModal({ type: 'edit', patient: p })} className="p-1.5 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors" title="Edit">
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDelete(p)} className="p-1.5 hover:bg-red-50 text-red-600 rounded-lg transition-colors">
+                        <button onClick={() => handleDelete(p)} className="p-1.5 hover:bg-red-50 text-red-600 rounded-lg transition-colors" title="Delete">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

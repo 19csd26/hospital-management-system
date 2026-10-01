@@ -13,11 +13,25 @@ module Api
       def show
         render json: {
           patient: @patient.as_json,
-          appointments: @patient.appointments.includes(:doctor => :user).order(appointment_date: :desc).limit(10).map { |a|
-            a.as_json.merge(doctor_name: a.doctor.user.name)
+          appointments: @patient.appointments.includes(:doctor => :user).order(appointment_date: :desc).map { |a|
+            a.as_json.merge(
+              doctor_name: a.doctor.user.name,
+              doctor_specialization: a.doctor.specialization
+            )
           },
-          medical_records: @patient.medical_records.includes(:doctor => :user).order(visit_date: :desc).limit(10).map { |r|
+          medical_records: @patient.medical_records.includes(:doctor => :user).order(visit_date: :desc).map { |r|
             r.as_json.merge(doctor_name: r.doctor.user.name)
+          },
+          bills: @patient.bills.order(created_at: :desc).map { |b|
+            b.as_json.merge(outstanding_amount: b.outstanding_amount)
+          },
+          stats: {
+            total_appointments: @patient.appointments.count,
+            upcoming_appointments: @patient.appointments.upcoming.count,
+            total_records: @patient.medical_records.count,
+            total_billed: @patient.bills.sum(:total_amount),
+            total_paid: @patient.bills.sum(:paid_amount),
+            outstanding: @patient.bills.sum(:total_amount) - @patient.bills.sum(:paid_amount)
           }
         }
       end
