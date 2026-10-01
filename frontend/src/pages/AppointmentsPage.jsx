@@ -7,10 +7,10 @@ import Layout from '../components/layout/Layout';
 import Modal from '../components/ui/Modal';
 import Pagination from '../components/ui/Pagination';
 import StatusBadge from '../components/ui/StatusBadge';
-import { appointments, patients, doctors } from '../api';
+import { appointments, doctors } from '../api';
+import PatientSearchInput from '../components/ui/PatientSearchInput';
 
 function AppointmentForm({ initial, onSubmit, loading }) {
-  const { data: patientData } = useQuery({ queryKey: ['patients-all'], queryFn: () => patients.list({ per_page: 100 }).then((r) => r.data) });
   const { data: doctorData } = useQuery({ queryKey: ['doctors-all'], queryFn: () => doctors.list({ per_page: 100 }).then((r) => r.data) });
   const [form, setForm] = useState(initial || { patient_id: '', doctor_id: '', appointment_date: '', status: 'scheduled', notes: '' });
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -19,10 +19,11 @@ function AppointmentForm({ initial, onSubmit, loading }) {
     <form onSubmit={(e) => { e.preventDefault(); onSubmit(form); }} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Patient *</label>
-        <select className="input" value={form.patient_id} onChange={(e) => set('patient_id', e.target.value)} required>
-          <option value="">Select patient</option>
-          {patientData?.patients?.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-        </select>
+        <PatientSearchInput
+          value={form.patient_id}
+          onChange={(id) => set('patient_id', id)}
+          required
+        />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Doctor *</label>

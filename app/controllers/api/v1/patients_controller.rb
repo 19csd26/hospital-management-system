@@ -5,7 +5,7 @@ module Api
 
       def index
         patients = Patient.all
-        patients = patients.where("name ILIKE ? OR email ILIKE ?", "%#{params[:q]}%", "%#{params[:q]}%") if params[:q].present?
+        patients = patients.where("name ILIKE ? OR email ILIKE ? OR phone ILIKE ?", "%#{params[:q]}%", "%#{params[:q]}%", "%#{params[:q]}%") if params[:q].present?
         patients = patients.order(created_at: :desc).page(params[:page]).per(params[:per_page] || 10)
         render json: { patients: patients.as_json, meta: pagination_meta(patients) }
       end
